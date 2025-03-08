@@ -1,1 +1,1 @@
-"# scms" 
+"# Smart Campus Management System" 
