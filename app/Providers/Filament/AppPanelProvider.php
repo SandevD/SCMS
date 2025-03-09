@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -75,7 +76,7 @@ class AppPanelProvider extends PanelProvider
                     ->icon(asset('assets/icons/megaphone.png')),
             ])
             ->plugins([
-                // FilamentSpatieRolesPermissionsPlugin::make(),
+                FilamentSpatieRolesPermissionsPlugin::make(),
                 // ActivitylogPlugin::make()
                 //     ->navigationCountBadge(true)
                 //     ->navigationGroup('Settings')
