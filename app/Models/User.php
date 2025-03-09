@@ -23,7 +23,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
         'email',
+        'mobile_no',
         'password',
     ];
 
@@ -59,5 +62,11 @@ class User extends Authenticatable
             ->explode(' ')
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
+    }
+
+    public function scopeIsSuperAdmin($query){
+        return $query->whereHas('roles', function ($q) {
+            $q->where('name', 'Super Admin');
+        });
     }
 }

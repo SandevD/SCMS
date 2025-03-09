@@ -74,6 +74,9 @@ class AppPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Announcements')
                     ->icon(asset('assets/icons/megaphone.png')),
+                NavigationGroup::make()
+                    ->label('Roles and Permissions')
+                    ->icon(asset('assets/icons/lock.png')),
             ])
             ->plugins([
                 FilamentSpatieRolesPermissionsPlugin::make(),
