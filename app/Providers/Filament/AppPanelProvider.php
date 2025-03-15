@@ -69,6 +69,9 @@ class AppPanelProvider extends PanelProvider
                     ->label('Dashboards')
                     ->icon(asset('assets/icons/app.png')),
                 NavigationGroup::make()
+                    ->label('Course Management')
+                    ->icon(asset('assets/icons/users.png')),
+                NavigationGroup::make()
                     ->label('User Management')
                     ->icon(asset('assets/icons/users.png')),
                 NavigationGroup::make()
