@@ -22,6 +22,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'admission_no',
         'name',
         'first_name',
         'last_name',
@@ -68,5 +69,13 @@ class User extends Authenticatable
         return $query->whereHas('roles', function ($q) {
             $q->where('name', 'Super Admin');
         });
+    }
+
+    public function batches() {
+        return $this->belongsToMany(Batch::class);
+    }
+
+    public function courses() {
+        return $this->belongsToMany(Course::class);
     }
 }
