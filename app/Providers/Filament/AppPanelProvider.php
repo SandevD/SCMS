@@ -69,14 +69,17 @@ class AppPanelProvider extends PanelProvider
                     ->label('Dashboards')
                     ->icon(asset('assets/icons/app.png')),
                 NavigationGroup::make()
-                    ->label('Course Management')
-                    ->icon(asset('assets/icons/users.png')),
-                NavigationGroup::make()
-                    ->label('User Management')
-                    ->icon(asset('assets/icons/users.png')),
+                    ->label('Resources')
+                    ->icon(asset('assets/icons/misc.png')),
                 NavigationGroup::make()
                     ->label('Announcements')
                     ->icon(asset('assets/icons/megaphone.png')),
+                NavigationGroup::make()
+                    ->label('Support Tickets')
+                    ->icon(asset('assets/icons/megaphone.png')),
+                NavigationGroup::make()
+                    ->label('User Management')
+                    ->icon(asset('assets/icons/users.png')),
                 NavigationGroup::make()
                     ->label('Roles and Permissions')
                     ->icon(asset('assets/icons/lock.png')),

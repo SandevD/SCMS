@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('classrooms', function (Blueprint $table) {
+        Schema::create('batch_user', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->foreignId('building_id')->nullable()->references('id')->on('buildings')->cascadeOnDelete();
+            $table->foreignId('batch_id')->nullable()->references('id')->on('batches')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('classrooms');
+        Schema::dropIfExists('batch_user');
     }
 };

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ClassroomResource\Pages;
-use App\Filament\Resources\ClassroomResource\RelationManagers;
-use App\Models\Classroom;
+use App\Filament\Resources\BuildingResource\Pages;
+use App\Filament\Resources\BuildingResource\RelationManagers;
+use App\Models\Building;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -17,17 +17,17 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ClassroomResource extends Resource
+class BuildingResource extends Resource
 {
-    protected static ?string $model = Classroom::class;
+    protected static ?string $model = Building::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $label = 'Classroom';
+    protected static ?string $label = 'Building';
 
     protected static ?string $navigationGroup = 'Resources';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -35,12 +35,8 @@ class ClassroomResource extends Resource
             ->schema([
                 Section::make('Details')
                     ->schema([
-                        Select::make('building_id')
-                            ->label('Buidling')
-                            ->relationship('building', 'name')
-                            ->searchable(),
                         TextInput::make('name')
-                            ->label('Name of Classroom')
+                            ->label('Name of Building')
                             ->required(),
                     ])->columns(2),
             ]);
@@ -54,11 +50,6 @@ class ClassroomResource extends Resource
                     ->label('ID')
                     ->sortable()
                     ->searchable(),
-
-                TextColumn::make('building.name')
-                    ->label('Name of Building')
-                    ->searchable()
-                    ->sortable(),
 
                 TextColumn::make('name')
                     ->label('Name of Classroom')
@@ -88,9 +79,9 @@ class ClassroomResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListClassrooms::route('/'),
-            'create' => Pages\CreateClassroom::route('/create'),
-            'edit' => Pages\EditClassroom::route('/{record}/edit'),
+            'index' => Pages\ListBuildings::route('/'),
+            'create' => Pages\CreateBuilding::route('/create'),
+            'edit' => Pages\EditBuilding::route('/{record}/edit'),
         ];
     }
 }

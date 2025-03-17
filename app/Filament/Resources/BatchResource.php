@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ClassroomResource\Pages;
-use App\Filament\Resources\ClassroomResource\RelationManagers;
-use App\Models\Classroom;
+use App\Filament\Resources\BatchResource\Pages;
+use App\Filament\Resources\BatchResource\RelationManagers;
+use App\Filament\Resources\BatchResource\RelationManagers\UsersRelationManager;
+use App\Helpers\CoreHelper;
+use App\Models\Batch;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -17,31 +19,34 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ClassroomResource extends Resource
+class BatchResource extends Resource
 {
-    protected static ?string $model = Classroom::class;
+    protected static ?string $model = Batch::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $label = 'Classroom';
+    protected static ?string $label = 'Batch';
 
     protected static ?string $navigationGroup = 'Resources';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
+        $yearOptions = CoreHelper::getYears(10);
         return $form
             ->schema([
                 Section::make('Details')
                     ->schema([
-                        Select::make('building_id')
-                            ->label('Buidling')
-                            ->relationship('building', 'name')
-                            ->searchable(),
                         TextInput::make('name')
-                            ->label('Name of Classroom')
+                            ->label('Name of Batch')
                             ->required(),
+                        Select::make('from_year')
+                            ->label('Year')
+                            ->options($yearOptions),
+                        Select::make('to_year')
+                            ->label('Year')
+                            ->options($yearOptions),
                     ])->columns(2),
             ]);
     }
@@ -55,13 +60,18 @@ class ClassroomResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('building.name')
-                    ->label('Name of Building')
+                TextColumn::make('name')
+                    ->label('Name of Batch')
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('name')
-                    ->label('Name of Classroom')
+                TextColumn::make('from_year')
+                    ->label('From Year')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('to_year')
+                    ->label('To Year')
                     ->searchable()
                     ->sortable(),
             ])
@@ -70,6 +80,11 @@ class ClassroomResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('students')
+                    ->label('Students')
+                    ->color('success')
+                    ->icon('heroicon-o-users')
+                    ->url(fn($record): string => static::getUrl('students', ['record' => $record])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -81,16 +96,17 @@ class ClassroomResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            UsersRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListClassrooms::route('/'),
-            'create' => Pages\CreateClassroom::route('/create'),
-            'edit' => Pages\EditClassroom::route('/{record}/edit'),
+            'index' => Pages\ListBatches::route('/'),
+            'create' => Pages\CreateBatch::route('/create'),
+            'edit' => Pages\EditBatch::route('/{record}/edit'),
+            'students' => Pages\ManageBatchStudents::route('/{record}/students'),
         ];
     }
 }
