@@ -7,6 +7,7 @@ use App\Filament\Resources\ClassroomResource\RelationManagers;
 use App\Models\Classroom;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -24,7 +25,7 @@ class ClassroomResource extends Resource
 
     protected static ?string $label = 'Classroom';
 
-    protected static ?string $navigationGroup = 'Course Management';
+    protected static ?string $navigationGroup = 'Resources';
 
     protected static ?int $navigationSort = 2;
 
@@ -34,6 +35,10 @@ class ClassroomResource extends Resource
             ->schema([
                 Section::make('Details')
                     ->schema([
+                        Select::make('building_id')
+                            ->label('Buidling')
+                            ->relationship('building', 'name')
+                            ->searchable(),
                         TextInput::make('name')
                             ->label('Name of Classroom')
                             ->required(),
@@ -49,6 +54,11 @@ class ClassroomResource extends Resource
                     ->label('ID')
                     ->sortable()
                     ->searchable(),
+
+                TextColumn::make('building.name')
+                    ->label('Name of Building')
+                    ->searchable()
+                    ->sortable(),
 
                 TextColumn::make('name')
                     ->label('Name of Classroom')
