@@ -70,7 +70,10 @@ class AppPanelProvider extends PanelProvider
                     ->icon(asset('assets/icons/app.png')),
                 NavigationGroup::make()
                     ->label('Resources')
-                    ->icon(asset('assets/icons/misc.png')),
+                    ->icon(asset('assets/icons/classroom.png')),
+                NavigationGroup::make()
+                    ->label('Scheduling')
+                    ->icon(asset('assets/icons/calendar.png')),
                 NavigationGroup::make()
                     ->label('Announcements')
                     ->icon(asset('assets/icons/megaphone.png')),
