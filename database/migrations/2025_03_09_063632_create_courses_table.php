@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('batch_id')->nullable()->references('id')->on('batches')->cascadeOnDelete();
             $table->foreignId('classroom_id')->nullable()->references('id')->on('classrooms')->cascadeOnDelete();
             $table->string('name')->unique();
             $table->integer('max_student_limit')->default(100);
