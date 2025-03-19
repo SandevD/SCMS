@@ -21,38 +21,41 @@ class CalendarWidget extends FullCalendarWidget
         // This method should return an array of event-like objects. See: https://github.com/saade/filament-fullcalendar/blob/3.x/#returning-events
         // You can also return an array of EventData objects. See: https://github.com/saade/filament-fullcalendar/blob/3.x/#the-eventdata-class
 
-        return [
-            // Current events query
-            'events' => Event::query()
-                ->where('date', '>=', $fetchInfo['start'])
-                ->get()
-                ->map(
-                    fn(Event $event) => EventData::make()
-                        ->id($event->id)
-                        ->title($event->name)
-                        ->start($event->date)
-                        ->url(
-                            url: EventResource::getUrl(name: 'edit', parameters: ['record' => $event]),
-                            shouldOpenUrlInNewTab: true
-                        )
-                )
-                ->toArray(),
+        $events = Event::query()
+            ->where('start', '>=', $fetchInfo['start'])
+            ->where('end', '<=', $fetchInfo['end'])
+            ->get()
+            ->map(
+                fn(Event $event) => EventData::make()
+                    ->id($event->id)
+                    ->title($event->name)
+                    ->start($event->start)
+                    ->end($event->end)
+                    ->url(
+                        url: EventResource::getUrl(name: 'edit', parameters: ['record' => $event]),
+                        shouldOpenUrlInNewTab: true
+                    )
+            )
+            ->toArray();
+        $workshops = Workshop::query()
+            ->where('start', '>=', $fetchInfo['start'])
+            ->where('end', '<=', $fetchInfo['end'])
+            ->get()
+            ->map(
+                fn(Workshop $workshop) => EventData::make()
+                    ->id($workshop->id)
+                    ->title($workshop->name)
+                    ->start($workshop->start)
+                    ->end($workshop->end)
+                    ->url(
+                        url: WorkshopResource::getUrl(name: 'edit', parameters: ['record' => $workshop]),
+                        shouldOpenUrlInNewTab: true
+                    )
+            )
+            ->toArray();
 
-            // Add your other model query here
-            'workshops' => Workshop::query()
-                ->where('date', '>=', $fetchInfo['start'])
-                ->get()
-                ->map(
-                    fn(Workshop $workshop) => EventData::make()
-                        ->id($workshop->id)
-                        ->title($workshop->name)
-                        ->start($workshop->date)
-                        ->url(
-                            url: WorkshopResource::getUrl(name: 'edit', parameters: ['record' => $workshop]),
-                            shouldOpenUrlInNewTab: true
-                        )
-                )
-                ->toArray(),
-        ];
+        $allCalendarEvents = array_merge($events, $workshops);
+
+        return $allCalendarEvents;
     }
 }
