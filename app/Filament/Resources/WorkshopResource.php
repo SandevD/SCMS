@@ -40,15 +40,13 @@ class WorkshopResource extends Resource
                         TextInput::make('name')
                             ->label('Name')
                             ->required(),
-                        DatePicker::make('date')
-                            ->label('Date')
-                            ->format('Y-m-d')
+                        DatePicker::make('start')
+                            ->label('Start')
+                            ->format('Y-m-d H:i:s')
                             ->required(),
-                        TimePicker::make('start_time')
-                            ->label('Starting At')
-                            ->required(),
-                        TimePicker::make('end_time')
-                            ->label('Ending At')
+                        DatePicker::make('end')
+                            ->label('End')
+                            ->format('Y-m-d H:i:s')
                             ->required(),
                     ])->columns(2),
             ]);
@@ -62,19 +60,16 @@ class WorkshopResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Name'),
-                TextColumn::make('date')
+                TextColumn::make('start')
                     ->searchable()
                     ->sortable()
-                    ->date()
-                    ->label('Date'),
-                TextColumn::make('start_time')
-                    ->time()
+                    ->dateTime()
+                    ->label('Start'),
+                TextColumn::make('end')
                     ->searchable()
-                    ->label('Start Time'),
-                TextColumn::make('end_time')
-                    ->time()
-                    ->searchable()
-                    ->label('End Time'),
+                    ->sortable()
+                    ->dateTime()
+                    ->label('End'),
             ])
             ->filters([
                 //

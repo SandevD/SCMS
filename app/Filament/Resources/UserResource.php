@@ -24,11 +24,11 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $label = 'Super Admin';
+    protected static ?string $label = 'User';
 
     protected static ?string $navigationGroup = 'User Management';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -115,7 +115,10 @@ class UserResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->isGuest();
+            });
     }
 
     public static function getRelations(): array

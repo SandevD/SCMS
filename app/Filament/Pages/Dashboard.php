@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\CalendarWidget;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\StudentsPerMonth;
 use Filament\Pages\Dashboard\Concerns\HasFiltersAction;
@@ -21,6 +22,7 @@ class Dashboard extends \Filament\Pages\Dashboard
     {
         return [
             AccountWidget::class,
+            CalendarWidget::class,
         ];
     }
 }

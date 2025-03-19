@@ -14,24 +14,23 @@ class EventsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('events')->delete();
-        
+
         \DB::table('events')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
                 'name' => 'Google Developer Event',
-                'date' => '2025-03-27 00:00:00',
-                'start_time' => '09:00:00',
-                'end_time' => '17:00:00',
+                'start' => '2025-03-27 09:00:00',
+                'end' => '2025-03-29 05:00:00',
                 'status' => 1,
                 'created_at' => '2025-03-17 20:05:15',
                 'updated_at' => '2025-03-17 20:05:15',
             ),
         ));
-        
-        
+
+
     }
 }

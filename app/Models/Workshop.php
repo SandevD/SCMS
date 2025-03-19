@@ -8,15 +8,14 @@ class Workshop extends Model
 {
     protected $fillable = [
         'name',
-        'date',
-        'start_time',
-        'end_time',
+        'start',
+        'end',
         'status'
     ];
 
     protected $casts = [
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
+        'start' => 'datetime',
+        'end' => 'datetime',
         'status' => 'boolean',
     ];
 }
