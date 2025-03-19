@@ -71,6 +71,22 @@ class User extends Authenticatable
         });
     }
 
+    public function scopeIsLecturer($query){
+        return $query->whereHas('roles', function ($q) {
+            $q->where('name', 'Lecturer');
+        });
+    }
+
+    public function scopeIsStudent($query){
+        return $query->whereHas('roles', function ($q) {
+            $q->where('name', 'Student');
+        });
+    }
+
+    public function scopeIsGuest($query){
+        return $query->whereDoesntHave('roles');
+    }
+
     public function batches() {
         return $this->belongsToMany(Batch::class);
     }
