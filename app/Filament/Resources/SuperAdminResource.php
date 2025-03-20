@@ -36,10 +36,6 @@ class SuperAdminResource extends Resource
             ->schema([
                 Section::make('User Details')
                     ->schema([
-                        Select::make('building_id')
-                            ->label('Buidling')
-                            ->relationship('building', 'name')
-                            ->searchable(),
                         TextInput::make('name')
                             ->label('Full Name')
                             ->required()
