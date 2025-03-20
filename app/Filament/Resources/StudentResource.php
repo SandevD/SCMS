@@ -36,10 +36,6 @@ class StudentResource extends Resource
             ->schema([
                 Section::make('User Details')
                     ->schema([
-                        Select::make('building_id')
-                            ->label('Buidling')
-                            ->relationship('building', 'name')
-                            ->searchable(),
                         TextInput::make('admission_no')
                             ->label('Admission No')
                             ->required()
