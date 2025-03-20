@@ -10,6 +10,7 @@ use App\Models\Workshop;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -71,12 +72,36 @@ class WorkshopResource extends Resource
                     ])
                     ->modalDescription('By clicking confirm a reservation request for this workshop will be placed under your name.')
                     ->action(function ($record) {
-                        $reservation = new Reservation();
-                        $reservation->model = ReservationTypes::WORKSHOP->getName();
-                        $reservation->model_id = $record->id;
-                        $reservation->start = $record->start;
-                        $reservation->end = $record->end;
-                        $reservation->save();
+                        try {
+                            $userId = auth()->id();
+                            $existingReservation = Reservation::where('model', 'WORKSHOP')
+                                ->where('model_id', $record->id)
+                                ->where('user_id', $userId)
+                                ->whereIn('status', [1, 2])
+                                ->exists();
+                            if ($existingReservation) {
+                                throw new \Exception('You have already reserved a spot for this workshop please check the status of that before proceeding.');
+                            }
+                            Reservation::create([
+                                'model' => ReservationTypes::WORKSHOP->getName(),
+                                'model_id' => $record->id,
+                                'user_id' => $userId,
+                                'start' => $record->start,
+                                'end' => $record->end,
+                            ]);
+
+                            Notification::make()
+                                ->title('Reservation Successful')
+                                ->success()
+                                ->body('Your reservation has been placed successfully.')
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Reservation Failed')
+                                ->danger()
+                                ->body($e->getMessage())
+                                ->send();
+                        }
                     })
             ])
             ->bulkActions([]);
