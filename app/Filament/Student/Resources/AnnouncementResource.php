@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Student\Resources;
 
-use App\Filament\Resources\AnnouncementResource\Pages;
-use App\Filament\Resources\AnnouncementResource\RelationManagers;
+use App\Filament\Student\Resources\AnnouncementResource\Pages;
+use App\Filament\Student\Resources\AnnouncementResource\RelationManagers;
 use App\Models\Announcement;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,10 +20,6 @@ class AnnouncementResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $label = 'Announcement';
-
-    protected static ?string $navigationGroup = 'Announcements';
-
-    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -67,12 +63,8 @@ class AnnouncementResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
@@ -87,9 +79,6 @@ class AnnouncementResource extends Resource
     {
         return [
             'index' => Pages\ListAnnouncements::route('/'),
-            'create' => Pages\CreateAnnouncement::route('/create'),
-            'edit' => Pages\EditAnnouncement::route('/{record}/edit'),
         ];
     }
 }
-

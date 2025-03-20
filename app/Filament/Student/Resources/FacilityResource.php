@@ -3,11 +3,13 @@
 namespace App\Filament\Student\Resources;
 
 use App\Enum\ReservationTypes;
-use App\Filament\Student\Resources\WorkshopResource\Pages;
-use App\Filament\Student\Resources\WorkshopResource\RelationManagers;
+use App\Filament\Student\Resources\FacilityResource\Pages;
+use App\Filament\Student\Resources\FacilityResource\RelationManagers;
+use App\Models\Facility;
 use App\Models\Reservation;
-use App\Models\Workshop;
+use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -18,11 +20,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class WorkshopResource extends Resource
+class FacilityResource extends Resource
 {
-    protected static ?string $model = Workshop::class;
+    protected static ?string $model = Facility::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
+    protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
 
     public static function form(Form $form): Form
     {
@@ -36,20 +38,15 @@ class WorkshopResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('name')
+                    ->label('Name of Facility')
                     ->searchable()
-                    ->sortable()
-                    ->label('Name'),
-                TextColumn::make('start')
-                    ->searchable()
-                    ->sortable()
-                    ->dateTime()
-                    ->label('Start'),
-                TextColumn::make('end')
-                    ->searchable()
-                    ->sortable()
-                    ->dateTime()
-                    ->label('End'),
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -59,8 +56,8 @@ class WorkshopResource extends Resource
                     ->modalHeading('Reservation Request')
                     ->requiresConfirmation()
                     ->form([
-                        TextInput::make('workshop')
-                            ->label('Workshop')
+                        TextInput::make('facility')
+                            ->label('Facility')
                             ->default(fn($record) => $record->name ?? '')
                             ->disabled()
                             ->required(),
@@ -69,25 +66,43 @@ class WorkshopResource extends Resource
                             ->default(auth()->user()->name)
                             ->disabled()
                             ->required(),
+                            DateTimePicker::make('start')
+                            ->label('Start Time')
+                            ->required()
+                            ->default(now()),
+
+                        DateTimePicker::make('end')
+                            ->label('End Time')
+                            ->required()
+                            ->default(now()),
                     ])
-                    ->modalDescription('By clicking confirm a reservation request for this workshop will be placed under your name.')
-                    ->action(function ($record) {
+                    ->modalDescription('By clicking confirm a reservation request for this facility will be placed under your name.')
+                    ->action(function ($record, array $data,) {
                         try {
                             $userId = auth()->id();
-                            $existingReservation = Reservation::where('model', 'WORKSHOP')
+                            $requestedStart = Carbon::parse($data['start']);
+                            $requestedEnd = Carbon::parse($data['end']);
+                            $existingReservation = Reservation::where('model', 'FACILITY')
                                 ->where('model_id', $record->id)
-                                ->where('user_id', $userId)
-                                ->whereIn('status', [1, 2])
+                                ->where('status', 1)
+                                ->where(function ($query) use ($requestedStart, $requestedEnd) {
+                                    $query->whereBetween('start', [$requestedStart, $requestedEnd])
+                                        ->orWhereBetween('end', [$requestedStart, $requestedEnd])
+                                        ->orWhere(function ($query) use ($requestedStart, $requestedEnd) {
+                                            $query->where('start', '<=', $requestedStart)
+                                                ->where('end', '>=', $requestedEnd);
+                                        });
+                                })
                                 ->exists();
                             if ($existingReservation) {
-                                throw new \Exception('You have already reserved a spot for this workshop please check the status of that before proceeding.');
+                                throw new \Exception('A reservation by you or someone else already exists for this facility during the requested time.');
                             }
                             Reservation::create([
-                                'model' => ReservationTypes::WORKSHOP->getName(),
+                                'model' => ReservationTypes::FACILITY->getName(),
                                 'model_id' => $record->id,
                                 'user_id' => $userId,
-                                'start' => $record->start,
-                                'end' => $record->end,
+                                'start' => $requestedStart,
+                                'end' => $requestedEnd,
                             ]);
 
                             Notification::make()
@@ -117,7 +132,9 @@ class WorkshopResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListWorkshops::route('/'),
+            'index' => Pages\ListFacilities::route('/'),
+            'create' => Pages\CreateFacility::route('/create'),
+            'edit' => Pages\EditFacility::route('/{record}/edit'),
         ];
     }
 }

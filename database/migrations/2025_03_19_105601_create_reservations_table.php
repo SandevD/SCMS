@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->references('id')->on('users')->cascadeOnDelete();
+            $table->string('model');
+            $table->string('model_id');
+            $table->timestamp('start')->nullable();
+            $table->timestamp('end')->nullable();
+            $table->boolean('status')->default(2);
             $table->timestamps();
         });
     }
