@@ -36,14 +36,6 @@ class UserResource extends Resource
             ->schema([
                 Section::make('User Details')
                     ->schema([
-                        Select::make('building_id')
-                            ->label('Buidling')
-                            ->relationship('building', 'name')
-                            ->searchable(),
-                        TextInput::make('admission_no')
-                            ->label('Admission No')
-                            ->required()
-                            ->columnSpan(2),
                         TextInput::make('name')
                             ->label('Full Name')
                             ->required()
@@ -92,9 +84,6 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('admission_no')
-                    ->searchable()
-                    ->label('Admission No'),
                 TextColumn::make('name')
                     ->searchable()
                     ->label('Full Name'),
